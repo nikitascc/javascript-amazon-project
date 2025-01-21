@@ -42,7 +42,7 @@ products.forEach((product) => {
 
           <div class="product-spacer"></div>
 
-          <div class="added-to-cart">
+          <div class="added-to-cart js-added-to-cart-${product.id}">
             <img src="images/icons/checkmark.png">
             Added
           </div>
@@ -57,7 +57,8 @@ products.forEach((product) => {
 
 document.querySelector(".js-products-grid").innerHTML = productsHTML;
 
-
+// used to show the proper cart quantity after the page refresh 
+updateCartQuantity();
 
 function updateCartQuantity() {
   let cartQuantity = 0;
@@ -71,6 +72,9 @@ function updateCartQuantity() {
   console.log(cart);
 }
 
+// used to prevent 'Added' message flickering after repeat button presses 
+let timeoutID;
+
 document.querySelectorAll(".js-add-to-cart").forEach((button) => {
   button.addEventListener("click", () => {
     const productId = button.dataset.productId;
@@ -79,6 +83,19 @@ document.querySelectorAll(".js-add-to-cart").forEach((button) => {
 
     updateCartQuantity();
 
+// used to show the 'Added' message for 2 seconds
+    document
+    .querySelector(`.js-added-to-cart-${productId}`)
+    .classList.add("added-to-cart-visible");
+
+  clearTimeout(timeoutID);
+
+  timeoutID = setTimeout(() => {
+    // timeoutID = null;
+    document
+      .querySelector(`.js-added-to-cart-${productId}`)
+      .classList.remove("added-to-cart-visible");
+  }, 2000);
 
   });
 });
