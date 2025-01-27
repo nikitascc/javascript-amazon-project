@@ -1,10 +1,8 @@
-// Optional: notice we can write imports on multiple
-// lines so the line doesn't get too long.
-import { cart, addToCart, calculateCartQuantity } from "../data/cart.js";
-import { products } from "../data/products.js";
-import { formatCurrency } from "./utils/money.js";
+import {cart, addToCart} from '../data/cart.js';
+import {products} from '../data/products.js';
+import {formatCurrency} from './utils/money.js';
 
-let productsHTML = "";
+let productsHTML = '';
 
 products.forEach((product) => {
   productsHTML += `
@@ -31,7 +29,7 @@ products.forEach((product) => {
       </div>
 
       <div class="product-quantity-container">
-        <select class="js-quantity-selector-${product.id}">
+        <select>
           <option selected value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -60,23 +58,24 @@ products.forEach((product) => {
   `;
 });
 
-document.querySelector(".js-products-grid").innerHTML = productsHTML;
+document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
 function updateCartQuantity() {
-  const cartQuantity = calculateCartQuantity();
+  let cartQuantity = 0;
 
-  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  });
+
+  document.querySelector('.js-cart-quantity')
+    .innerHTML = cartQuantity;
 }
 
-updateCartQuantity();
-
-document.querySelectorAll(".js-add-to-cart").forEach((button) => {
-  button.addEventListener("click", () => {
-    const productId = button.dataset.productId;
-    const quantity = Number(
-      document.querySelector(`.js-quantity-selector-${productId}`).value
-    );
-    addToCart(productId, quantity);
-    updateCartQuantity();
+document.querySelectorAll('.js-add-to-cart')
+  .forEach((button) => {
+    button.addEventListener('click', () => {
+      const productId = button.dataset.productId;
+      addToCart(productId);
+      updateCartQuantity();
+    });
   });
-});
